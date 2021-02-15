@@ -23,7 +23,7 @@ export class ExpressAppConfig {
         this.routingOptions = appOptions.routing;
         this.setOpenApiValidatorOptions(definitionPath, appOptions);
         this.app = express();
-
+        this.app.setCORS(appOptions);
         const spec = fs.readFileSync(definitionPath, 'utf8');
         const swaggerDoc = jsyaml.safeLoad(spec);
 
@@ -44,6 +44,19 @@ export class ExpressAppConfig {
         this.app.use(new SwaggerRouter().initialize(this.routingOptions));
 
         this.app.use(this.errorHandler);
+    }
+
+    private setCORS(appOptions:Oas3AppOptions)
+    {
+        if (appOptions.isCORSEnabled)
+        {
+            const cors = require('cors');
+            if(!appOptions.corsOptions)
+                this.app.use(cors(appOptions.corsOptions));
+            else
+                this.app.use(cors());
+        }
+        return;
     }
 
     private setOpenApiValidatorOptions(definitionPath: string, appOptions: Oas3AppOptions) {
