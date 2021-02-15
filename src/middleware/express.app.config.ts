@@ -23,7 +23,7 @@ export class ExpressAppConfig {
         this.routingOptions = appOptions.routing;
         this.setOpenApiValidatorOptions(definitionPath, appOptions);
         this.app = express();
-        this.app.setCORS(appOptions);
+        this.setCORS(appOptions);
         const spec = fs.readFileSync(definitionPath, 'utf8');
         const swaggerDoc = jsyaml.safeLoad(spec);
 
@@ -51,7 +51,7 @@ export class ExpressAppConfig {
         if (appOptions.isCORSEnabled)
         {
             const cors = require('cors');
-            if(!appOptions.corsOptions)
+            if(appOptions.corsOptions)
                 this.app.use(cors(appOptions.corsOptions));
             else
                 this.app.use(cors());
